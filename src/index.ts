@@ -1,4 +1,10 @@
-import { setFailed, notice, getInput, getMultilineInput, summary } from '@actions/core';
+import {
+  setFailed,
+  notice,
+  getInput,
+  getMultilineInput,
+  summary,
+} from '@actions/core';
 import * as fs from 'fs';
 import * as path from 'path';
 import {
@@ -19,39 +25,7 @@ const handleError = (error: Error) => {
 
 export const DEBUG = getInput('DEBUG') === 'true';
 
-// TODO: Tidy this up!
 async function run() {
-  //                              .-----.
-  //                             /7  .  (
-  //                            /   .-.  \
-  //                           /   /   \  \
-  //                          / `  )   (   )
-  //                         / `   )   ).  \
-  //                       .'  _.   \_/  . |
-  //      .--.           .' _.' )`.        |
-  //     (    `---...._.'   `---.'_)    ..  \
-  //      \            `----....___    `. \  |
-  //       `.           _ ----- _   `._  )/  |
-  //         `.       /"  \   /"  \`.  `._   |
-  //           `.    ((O)` ) ((O)` ) `.   `._\
-  //             `-- '`---'   `---' )  `.    `-.
-  //                /                  ` \      `-.
-  //              .'                      `.       `.
-  //             /                     `  ` `.       `-.
-  //      .--.   \ ===._____.======. `    `   `. .___.--`     .''''.
-  //     ' .` `-. `.                )`. `   ` ` \          .' . '  8)
-  //    (8  .  ` `-.`.               ( .  ` `  .`\      .'  '    ' /
-  //     \  `. `    `-.               ) ` .   ` ` \  .'   ' .  '  /
-  //      \ ` `.  ` . \`.    .--.     |  ` ) `   .``/   '  // .  /
-  //       `.  ``. .   \ \   .-- `.  (  ` /_   ` . / ' .  '/   .'
-  //         `. ` \  `  \ \  '-.   `-'  .'  `-.  `   .  .'/  .'
-  //           \ `.`.  ` \ \    ) /`._.`       `.  ` .  .'  /
-  //     LGB    |  `.`. . \ \  (.'               `.   .'  .'
-  //         __/  .. \ \ ` ) \                     \.' .. \__
-  //  .-._.-'     '"  ) .-'   `.                   (  '"     `-._.--.
-  // (_________.-====' / .' /\_)`--..__________..-- `====-. _________)
-  //                  (.'(.'
-
   let config: Config;
   // Get the .flinter/config.json file
   try {
@@ -80,10 +54,11 @@ async function run() {
     markdownExtensions = DEFAULT_VALID_MARKDOWN_EXTENSIONS;
   }
 
-  const imageExtensions =
-    getInput('VALID_IMAGE_EXTENSIONS') || DEFAULT_VALID_IMAGE_EXTENSIONS;
+  // I (Allison) commented these out because they don't appear to be used
+  // const imageExtensions =
+  //   getInput('VALID_IMAGE_EXTENSIONS') || DEFAULT_VALID_IMAGE_EXTENSIONS;
 
-  const frontmatterFields = getMultilineInput('REQUIRED_FRONTMATTER');
+  // const frontmatterFields = getMultilineInput('REQUIRED_FRONTMATTER');
 
   // Create a octokit reporter.
   const reporter = initOctokit({ token: repoToken });
@@ -101,8 +76,8 @@ async function run() {
   }
   const output = await CheckMarkdownFiles(files, config);
 
-  await PrintOutput(output);
-  await PrintSummary(output);
+  // await PrintOutput(output);
+  // await PrintSummary(output);
 }
 
 process.on('unhandledRejection', handleError);
@@ -164,59 +139,79 @@ async function CheckMarkdownFiles(
   return output;
 }
 
-async function PrintOutput(output: IFlintResults): Promise<void> {
-  var errors = output.results.filter((err) => err.result == false);
+// async function PrintOutput(output: IFlintResults): Promise<void> {
+//   var errors = output.results.filter((err) => err.result == false);
 
-  if (errors.length > 0) {
-    setFailed(`errors found: ${errors.length}`);
+//   if (errors.length > 0) {
+//     setFailed(`errors found: ${errors.length}`);
 
-    for (const error of errors) {
-      setFailed(
-        `${error.error} ${error?.fileName ? `in file ${error?.fileName}` : ''}`
-      );
-    }
-  }
-}
+//     for (const error of errors) {
+//       setFailed(
+//         `${error.error} ${error?.fileName ? `in file ${error?.fileName}` : ''}`
+//       );
+//     }
+//   }
+// }
 
-async function PrintSummary(output: IFlintResults): Promise<void> {
-  summary.addHeading('Flint Results');
+// async function PrintSummary(output: IFlintResults): Promise<void> {
+//   summary.addHeading('Flint Results');
 
-  var filesScanned: { fileName: string | undefined; success: boolean; }[] = [];
+//   var filesScanned: { fileName: string | undefined; success: boolean }[] = [];
 
-  output.results.forEach((error: IFlinterResult) => {
-    var existingItemIndex = filesScanned.map(f => f.fileName).indexOf(error.fileName);
+//   output.results.forEach((error: IFlinterResult) => {
+//     var existingItemIndex = filesScanned
+//       .map((f) => f.fileName)
+//       .indexOf(error.fileName);
 
-    if (existingItemIndex == -1) { // File not listed yet
-      filesScanned.push({ fileName: error.fileName, success: error.result });
-    } else if (!error.result) {
-      filesScanned[existingItemIndex].success = false;
-    }
-  });
+//     if (existingItemIndex == -1) {
+//       // File not listed yet
+//       filesScanned.push({ fileName: error.fileName, success: error.result });
+//     } else if (!error.result) {
+//       filesScanned[existingItemIndex].success = false;
+//     }
+//   });
 
-  var summaryTableArray = [];
-  summaryTableArray.push([{ data: 'File Name', header: true }, { data: 'Result', header: true }]);
+//   var summaryTableArray = [];
+//   summaryTableArray.push([
+//     { data: 'File Name', header: true },
+//     { data: 'Result', header: true },
+//   ]);
 
-  filesScanned.forEach((file: { fileName: string | undefined; success: boolean; }) => {
-    summaryTableArray.push([file.fileName, file.success ? '✅' : '❌']);
-  });
+//   filesScanned.forEach(
+//     (file: { fileName: string | undefined; success: boolean }) => {
+//       summaryTableArray.push([file.fileName, file.success ? '✅' : '❌']);
+//     }
+//   );
 
-  summary.addTable(summaryTableArray);
+//   summary.addTable(summaryTableArray);
 
-  var errorCount = output.results.filter((err) => err.result == false).length;
-  summary.addHeading(`File Errors - ${errorCount}`, 2);
+//   var errorCount = output.results.filter((err) => err.result == false).length;
+//   summary.addHeading(`File Errors - ${errorCount}`, 2);
 
-  filesScanned.filter(f => !f.success).forEach(f => {
-    var tableArray = [];
-    summary.addHeading(f.fileName ?? '', 3);
+//   filesScanned
+//     .filter((f) => !f.success)
+//     .forEach((f) => {
+//       var tableArray = [];
+//       summary.addHeading(f.fileName ?? '', 3);
 
-    tableArray.push([{ data: 'Field', header: true }, { data: 'Line Number', header: true }, { data: 'Error Message', header: true }]);
+//       tableArray.push([
+//         { data: 'Field', header: true },
+//         { data: 'Line Number', header: true },
+//         { data: 'Error Message', header: true },
+//       ]);
 
-    output.results.filter(e => e.fileName == f.fileName && !e.result).forEach(err =>
-      tableArray.push([err.field, err.errorLineNo?.toString(), err.error ?? ''])
-    );
+//       output.results
+//         .filter((e) => e.fileName == f.fileName && !e.result)
+//         .forEach((err) =>
+//           tableArray.push([
+//             err.field,
+//             err.errorLineNo?.toString(),
+//             err.error ?? '',
+//           ])
+//         );
 
-    summary.addTable(tableArray);
-  });
+//       summary.addTable(tableArray);
+//     });
 
-  await summary.write();
-}
+//   await summary.write();
+// }

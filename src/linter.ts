@@ -26,7 +26,7 @@ const lintFrontmatter = async ({
             config.defaults.directories,
             field,
             fileName,
-            frontmatter,
+            frontmatter
           );
 
           if (res) {
@@ -73,7 +73,9 @@ async function flintCustom(
         dir as keyof Config
       ] as FlinterCustomRuleSettings;
 
-      const currentRule = ruleSetting.frontmatter.find(f => f.field == field) ?? ruleSetting.frontmatter[0];
+      const currentRule =
+        ruleSetting.frontmatter.find((f) => f.field == field) ??
+        ruleSetting.frontmatter[0];
 
       return await flint({
         markdown,
@@ -124,12 +126,12 @@ const flint = async (props: IFlinter): Promise<IFlinterResult[]> => {
   fieldResult.field = field;
   result.push(fieldResult);
 
-  // Check if the frontmatter value is of the correct type
-  const typeResult = flintType(props);
-  typeResult.fileName = props.fileName;
-  typeResult.errorLineNo = lineNumber;
-  typeResult.field = field;
-  result.push(typeResult);
+  // // Check if the frontmatter value is of the correct type
+  // const typeResult = flintType(props);
+  // typeResult.fileName = props.fileName;
+  // typeResult.errorLineNo = lineNumber;
+  // typeResult.field = field;
+  // result.push(typeResult);
 
   // Runs a custom rule on the frontmatter
   const customRule = await flintRule(props);
@@ -163,20 +165,20 @@ const flintField = (props: IFlinter): IFlinterResult => {
   };
 };
 
-// TODO: Implement this
-// Checks if the frontmatter value is of the correct type
-const flintType = (props: IFlinter): IFlinterResult => {
-  const { content, rule } = props;
-  const { type } = rule;
+// // TODO: Implement this
+// // Checks if the frontmatter value is of the correct type
+// const flintType = (props: IFlinter): IFlinterResult => {
+//   const { content, rule } = props;
+//   const { type } = rule;
 
-  if (DEBUG) {
-    console.log(`Checking if ${content.field} is of type ${type}`);
-  }
+//   if (DEBUG) {
+//     console.log(`Checking if ${content.field} is of type ${type}`);
+//   }
 
-  return {
-    result: true,
-  };
-};
+//   return {
+//     result: true,
+//   };
+// };
 
 // Runs a custom rule on the frontmatter
 const flintRule = async (props: IFlinter): Promise<IFlinterResult> => {
