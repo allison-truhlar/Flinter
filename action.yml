@@ -1,19 +1,22 @@
-name: "Flinter.md"
-description: "A customizable Markdown Frontmatter linter"
-author: "JackDevAU"
+name: 'Flinter.md'
+description: 'A customizable Markdown Frontmatter linter'
+author: 'JackDevAU'
 branding:
-  icon: "align-justify"
-  color: "red"
+  icon: 'align-justify'
+  color: 'red'
 
 inputs:
   GITHUB_TOKEN:
-    description: "GitHub token"
+    description: 'GitHub token'
     required: true
   DEBUG:
-    description: "Debug logging"
+    description: 'Debug logging'
     required: false
-    default: "false"
+    default: 'false'
+  VALID_DIRECTORY:
+    description: 'List of directories to search for changed files in'
+    required: false
 
 runs:
-  using: "node16"
-  main: "dist/index.js"
+  using: 'node20'
+  main: 'dist/index.js'
